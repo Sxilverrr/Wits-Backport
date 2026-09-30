@@ -42,6 +42,6 @@ public class WITSOpCommand extends CommandBase {
         double z = parseCoordinate(senderPos.getZ(), args[3], true).getResult();
         BlockPos target = new BlockPos(x, y, z);
 
-        StructureLookup.listStructuresAtSpot(world, target, false, sender);
+        WITSCommand.listStructures(world, target, false, sender);
     }
 }

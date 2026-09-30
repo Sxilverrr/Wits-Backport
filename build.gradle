@@ -9,29 +9,19 @@ buildscript {
 }
 
 apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
 
-version = '1.1.0-1.12.2'
+def modVersion = '1.2'
+version = "$modVersion-1.12.2"
 group = 'com.telepathicgrunt.wits'
-archivesBaseName = 'wits'
+archivesBaseName = 'wits-forge'
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+sourceCompatibility = targetCompatibility = '1.8'
 
 minecraft {
     mappings channel: 'snapshot', version: '20171003-1.12'
-
     runs {
-        client {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
-        }
-
-        server {
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
-        }
+        client { workingDirectory project.file('run') }
+        server { workingDirectory project.file('run') }
     }
 }
 
@@ -39,34 +29,12 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2864'
 }
 
-jar {
-    manifest {
-        attributes([
-            "Specification-Title": "wits",
-            "Specification-Vendor": "TelepathicGrunt",
-            "Specification-Version": "1",
-            "Implementation-Title": project.name,
-            "Implementation-Version": "${version}",
-            "Implementation-Vendor": "TelepathicGrunt",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        ])
-    }
+processResources {
+    inputs.property 'version', modVersion
+    filesMatching(['mcmod.info', 'version.properties']) { expand version: modVersion }
 }
 
 jar.finalizedBy('reobfJar')
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact jar
-        }
-    }
-    repositories {
-        maven {
-            url "file:///${project.projectDir}/mcmodsrepo"
-        }
-    }
-}
 
 sourceSets.each {
     def dir = layout.buildDirectory.file("sourcesSets/$it.name").get().asFile
